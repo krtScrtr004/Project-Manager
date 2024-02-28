@@ -33,7 +33,7 @@ void Project_Manager::m_fetch_data(void)
             m_info.m_name.push_back(current_name);
             m_info.m_path.push_back(current_path);
             m_info.m_link.push_back(current_link);
-            m_info.m_link.push_back(current_link);
+            m_info.m_status.push_back(current_status);
             m_info.m_id.push_back(current_id);
 
             m_infile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -95,13 +95,12 @@ void Project_Manager::m_add_project(const std::string PROJECT_NAME, const std::s
     m_info.m_id.push_back(rand() % 9999);
 }
 
-// void Project_Manager::m_open_project(Project_Manager &project)
-// {
-//     unsigned short counter = 0U;
-//     while (counter < m_info.m_name.size())
-//     {
-//         std::cout << m_info.m_name[counter] + ' ' + m_info.m_path[counter] + ' ' + m_info.m_link[counter] + ' ' + m_info.m_status[counter] + ' '
-//                   << m_info.m_id[counter] << ' ' << m_info.m_date[counter] << '\n';
-//         ++counter;
-//     }
-// }
+void Project_Manager::m_open_project(Project_Manager &project)
+{
+    unsigned short counter = 0U;
+    while (counter < m_info.m_name.size())
+    {
+        std::cout << m_info.m_name[counter] + ' ' + m_info.m_path[counter] + ' ' + m_info.m_link[counter] + ' ' +  m_info.m_status[counter] + ' ' << m_info.m_id[counter] << '\n';
+        ++counter;
+    }
+}

@@ -84,6 +84,14 @@ public:
         }
     }
 
+    inline unsigned short m_project_count(void) { return m_info.m_name.size(); }
+
+    inline const std::string m_get_project_name(const unsigned short INDEX) { return m_info.m_name[INDEX]; }
+    inline const std::string m_get_project_path(const unsigned short INDEX) { return m_info.m_path[INDEX]; }
+    inline const std::string m_get_project_link(const unsigned short INDEX) { return m_info.m_link[INDEX]; }
+    inline const std::string m_get_project_status(const unsigned short INDEX) { return m_info.m_status[INDEX]; }
+    inline const unsigned short m_get_project_id(const unsigned short INDEX) { return m_info.m_id[INDEX]; }
+
     void m_add_project(const std::string PROJECT_NAME, const std::string PROJECT_PATH,
                        const std::string PROJECT_LINK, const std::string PROJECT_STATUS);
 

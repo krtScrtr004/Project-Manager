@@ -1,0 +1,2 @@
+#ifnore all .exe files
+*.exe

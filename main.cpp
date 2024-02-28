@@ -6,11 +6,22 @@
 #include "proj_man.h"
 #include "utility.h"
 
+void open_project(Project_Manager &project)
+{
+    // Open through ID / NAME
+
+    return;
+}
+
 inline void add_project(Project_Manager &project)
 {
     std::cout << "ENTER PROJECT DETAILS: \n";
-    project.m_add_project(project.m_enter_project_name(), project.m_enter_project_path(),
-                          project.m_enter_project_link(), project.m_enter_project_status());
+    const std::string PROJECT_NAME = project.m_enter_project_name(),
+                      PROJECT_PATH = project.m_enter_project_path(),
+                      PROJECT_LINK = project.m_enter_project_link(),
+                      PROJECT_STATUS = project.m_enter_project_status();
+    project.m_add_project(PROJECT_NAME, PROJECT_PATH,
+                          PROJECT_LINK, PROJECT_STATUS);
     std::cout << "NEW PROJECT SUCCESSFULLY ADDED\n";
 
     return;
@@ -18,6 +29,25 @@ inline void add_project(Project_Manager &project)
 
 void home_page(Project_Manager &project)
 {
+    const unsigned short PROJECT_COUNT = project.m_project_count();
+    if (PROJECT_COUNT < 1)
+    {
+        std::cout << "No Projects found\n";
+    }
+    else
+    {
+        unsigned short i = 0U;
+        while (i < PROJECT_COUNT)
+        {
+            std::cout << project.m_get_project_id(i) << ' '
+                      << project.m_get_project_name(i) << ' '
+                      << project.m_get_project_path(i) << ' '
+                      << project.m_get_project_link(i) << ' '
+                      << project.m_get_project_status(i) << '\n';
+            ++i;
+        }
+    }
+
     std::cout << "HOME\n";
     std::cout << "[1] ADD PROJECT\n";
     std::cout << "[2] OPEN PROJECT\n";
@@ -79,7 +109,7 @@ int main(void)
 
     try
     {
-        Project_Manager project;\
+        Project_Manager project;
         home_page(project);
     }
     catch (const std::exception &e)
@@ -87,13 +117,6 @@ int main(void)
         std::cerr << "Exception: " << e.what() << '\n';
         return 1;
     }
-
-   
-
-    // if (!project.m_save_data())
-    // {
-    //     return 1;
-    // }
 
     return 0;
 }
