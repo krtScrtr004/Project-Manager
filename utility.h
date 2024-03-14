@@ -11,8 +11,8 @@
 #include "project.h"
 
 // FUNCTIONS FROM main.cpp
-void open_dir(Project &project);
 void open_proj(Project &project);
+void open_dir(Project &project);
 void open_file(Project &project);
 
 // --------------------------------------------------------------
@@ -109,7 +109,7 @@ inline const Content_Type_e select_content(void)
     return select_content;
 }
 
-void select_option(Project &project);
+const Options_e select_option(Project &project);
 
 inline void open_content(Project &project, const Content_Type_e CONTENT_TYPE)
 {

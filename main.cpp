@@ -116,8 +116,12 @@ void open_proj(Project &project)
         throw;
     }
 
-    print_contents(project.m_get_sub_dir_vector(), project.m_get_file_vector());
-    select_option(project);
+    Options_e option;
+    while (option != Options_e::EXIT)
+    {
+        print_contents(project.m_get_sub_dir_vector(), project.m_get_file_vector());
+        option = select_option(project);
+    }
 
     try
     {
@@ -133,6 +137,8 @@ void open_proj(Project &project)
 
 void open_dir(Project &project)
 {
+    Project *temp_project = new Project(project);
+    
     bool is_valid = false;
     std::string temp_dir_name = " ";
     do
@@ -141,8 +147,8 @@ void open_dir(Project &project)
         getline(std::cin, temp_dir_name);
         is_valid = is_valid_str(temp_dir_name, 1, 50);
     } while (!is_valid);
-    const std::size_t INDEX = project.m_search(temp_dir_name, project.m_get_sub_dir_vector());
-    if (INDEX < 0 || INDEX > project.m_get_sub_dir_vector().size() - 1)
+    const std::size_t INDEX = temp_project->m_search(temp_dir_name, temp_project->m_get_sub_dir_vector());
+    if (INDEX < 0 || INDEX > temp_project->m_get_sub_dir_vector().size() - 1)
     {
         std::cout << "DIRECTORY NAME NOT FOUND!\n";
         return;
@@ -150,29 +156,33 @@ void open_dir(Project &project)
 
     try
     {
-        project.m_clear_current_proj_vector();
-        project.m_init_proj(project.m_get_sub_dir_name(INDEX));
+        temp_project->m_clear_current_proj_vector();
+        temp_project->m_init_proj(temp_project->m_get_sub_dir_name(INDEX));
     }
     catch (const std::exception &e)
     {
         throw;
     }
 
-    print_contents(project.m_get_sub_dir_vector(), project.m_get_file_vector());
-    select_option(project);
+    Options_e option;
+    while (option != Options_e::EXIT)
+    {
+        print_contents(temp_project->m_get_sub_dir_vector(), temp_project->m_get_file_vector());
+        option = select_option(*temp_project);
+    }
 
     try
     {
-        project.m_change_dir("..");
+        temp_project->m_change_dir("..");
     }
     catch (const std::exception &e)
     {
         throw;
     }
 
+    delete temp_project;
     return;
 }
-
 
 void open_file(Project &project)
 {
@@ -196,8 +206,3 @@ void open_file(Project &project)
 
     return;
 }
-
-
-
-
-

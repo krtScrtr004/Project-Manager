@@ -42,7 +42,7 @@ void print_contents(const std::vector<std::string> &DIR_VECTOR, const std::vecto
     return;
 }
 
-void select_option(Project &project)
+const Options_e select_option(Project &project)
 {
     std::cout << "OPTIONS: \n";
     std::cout << "[1] OPEN\n";
@@ -64,11 +64,15 @@ void select_option(Project &project)
     } while (!is_valid);
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    const Content_Type_e CONTENT_TYPE = select_content();
+    Content_Type_e content_type;
+    if (option != Options_e::EXIT)
+    {
+        content_type = select_content();
+    }
     switch (option)
     {
     case Options_e::OPEN:
-        open_content(project, CONTENT_TYPE);
+        open_content(project, content_type);
         break;
 
     case Options_e::ADD:
@@ -90,6 +94,6 @@ void select_option(Project &project)
         std::cerr << out_of_bounds_error(static_cast<short>(Options_e::OPEN),
                                          static_cast<short>(Options_e::EXIT));
     }
+
+    return option;
 }
-
-
