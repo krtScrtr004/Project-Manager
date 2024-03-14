@@ -9,40 +9,41 @@ std::istream &operator>>(std::istream &is, Options_e &option)
 }
 
 // PRIVATE METHODS
-void Project::m_sort(std::vector<std::string> orig_directory)
+#include "project.h"
+void Project::m_sort(std::vector<std::string> orig_dir)
 {
-    if (orig_directory.size() <= 1)
+    if (orig_dir.size() <= 1)
     {
         return;
     }
 
-    const unsigned short left_size = m_directory.size() / 2;
-    std::vector<std::string> left_directory(orig_directory.begin(), orig_directory.begin() + left_size);
-    std::vector<std::string> right_directory(orig_directory.begin() + left_size, orig_directory.end());
+    const unsigned short left_size = m_dir.size() / 2;
+    std::vector<std::string> left_dir(orig_dir.begin(), orig_dir.begin() + left_size);
+    std::vector<std::string> right_dir(orig_dir.begin() + left_size, orig_dir.end());
 
-    m_sort(left_directory);
-    m_sort(right_directory);
+    m_sort(left_dir);
+    m_sort(right_dir);
 
-    m_sort_compare(orig_directory, left_directory, right_directory);
+    m_sort_compare(orig_dir, left_dir, right_dir);
 }
 
-void Project::m_sort_compare(std::vector<std::string> orig_directory, std::vector<std::string> left_directory, std::vector<std::string> right_directory) const
+void Project::m_sort_compare(std::vector<std::string> orig_dir, std::vector<std::string> left_dir, std::vector<std::string> right_dir) const
 {
     unsigned short i = 0, j = 0, k = 0,
-                   left_size = left_directory.size(),
-                   right_size = right_directory.size();
+                   left_size = left_dir.size(),
+                   right_size = right_dir.size();
 
     while (i < left_size && j < right_size)
     {
-        if (left_directory[i] < right_directory[j])
+        if (left_dir[i] < right_dir[j])
         {
-            orig_directory[k] = left_directory[i];
+            orig_dir[k] = left_dir[i];
             i++;
             k++;
         }
         else
         {
-            orig_directory[k] = right_directory[j];
+            orig_dir[k] = right_dir[j];
             j++;
             k++;
         }
@@ -50,14 +51,14 @@ void Project::m_sort_compare(std::vector<std::string> orig_directory, std::vecto
 
     while (i < left_size)
     {
-        orig_directory[k] = left_directory[i];
+        orig_dir[k] = left_dir[i];
         i++;
         k++;
     }
 
     while (j < right_size)
     {
-        orig_directory[k] = right_directory[j];
+        orig_dir[k] = right_dir[j];
         j++;
         k++;
     }
@@ -65,7 +66,7 @@ void Project::m_sort_compare(std::vector<std::string> orig_directory, std::vecto
     return;
 }
 
-void Project::m_fetch_directory(std::vector<std::string> &vector)
+void Project::m_fetch_dir(std::vector<std::string> &vector)
 {
 #ifdef _WIN32
     WIN32_FIND_DATAA find_data;
@@ -105,7 +106,7 @@ void Project::m_fetch_file(void)
         {
             if ((find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0)
             {
-                m_current_project.m_file.push_back(find_data.cFileName);
+                m_current_proj.m_file.push_back(find_data.cFileName);
             }
         } while (FindNextFileA(handle_find, &find_data) != 0);
 
@@ -116,19 +117,19 @@ void Project::m_fetch_file(void)
         throw std::runtime_error("ERROR ENUMERATING DIRECTORY CONTENTS");
     }
 #else
-    DIR *directory = opendir(".");
-    if (directory != nullptr)
+    DIR *dir = opendir(".");
+    if (dir != nullptr)
     {
         struct dirent *entry;
-        while ((entry = readdir(directory)) != nullptr)
+        while ((entry = readdir(dir)) != nullptr)
         {
             struct stat st;
             if (stat(entry->d_name, &st) == 0 && S_ISREG(st.st_mode))
             {
-                m_current_project.m_file.push_back(entry->d_name);
+                m_current_proj.m_file.push_back(entry->d_name);
             }
         }
-        closedir(directory);
+        closedir(dir);
     }
     else
     {
@@ -144,25 +145,25 @@ Project::Project()
 {
     try
     {
-        m_change_directory("..");
-        m_fetch_directory(m_directory);
+        m_change_dir("..");
+        m_fetch_dir(m_dir);
     }
     catch (const std::exception &e)
     {
         throw;
     }
 
-    m_sort(this->m_directory);
+    m_sort(this->m_dir);
 }
 
 std::string &Project::operator[](const size_t INDEX)
 {
-    if (INDEX >= m_directory.size())
+    if (INDEX >= m_dir.size())
     {
         throw std::out_of_range("INDEX OUT OF BOUNDS");
     }
 
-    return m_directory[INDEX];
+    return m_dir[INDEX];
 }
 
 const short Project::m_search(const std::string INPUT, const std::vector<std::string> &VECTOR) const
@@ -195,7 +196,7 @@ const short Project::m_search(const std::string INPUT, const std::vector<std::st
     return index;
 }
 
-void Project::m_change_directory(const std::string DIRECTORY_NAME) const
+void Project::m_change_dir(const std::string DIRECTORY_NAME) const
 {
 #ifdef _WIN32
     if (_chdir(DIRECTORY_NAME.c_str()) != 0)
@@ -212,12 +213,12 @@ void Project::m_change_directory(const std::string DIRECTORY_NAME) const
     return;
 }
 
-void Project::m_init_project(const std::string PROJECT_NAME)
+void Project::m_init_proj(const std::string DIR_NAME)
 {
     try
     {
-        m_change_directory(PROJECT_NAME);
-        m_fetch_directory(m_current_project.m_sub_directory);
+        m_change_dir(DIR_NAME);
+        m_fetch_dir(m_current_proj.m_sub_dir);
         m_fetch_file();
     }
     catch (const std::exception &e)
