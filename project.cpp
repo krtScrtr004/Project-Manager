@@ -9,41 +9,40 @@ std::istream &operator>>(std::istream &is, Options_e &option)
 }
 
 // PRIVATE METHODS
-#include "project.h"
-void Project::m_sort(std::vector<std::string> orig_dir)
+void Project::m_sort(std::vector<std::string> orig_vect)
 {
-    if (orig_dir.size() <= 1)
+    if (orig_vect.size() <= 1)
     {
         return;
     }
 
-    const unsigned short left_size = m_dir.size() / 2;
-    std::vector<std::string> left_dir(orig_dir.begin(), orig_dir.begin() + left_size);
-    std::vector<std::string> right_dir(orig_dir.begin() + left_size, orig_dir.end());
+    const unsigned short left_size = orig_vect.size() / 2;
+    std::vector<std::string> left_vect(orig_vect.begin(), orig_vect.begin() + left_size);
+    std::vector<std::string> right_vect(orig_vect.begin() + left_size, orig_vect.end());
 
-    m_sort(left_dir);
-    m_sort(right_dir);
+    m_sort(left_vect);
+    m_sort(right_vect);
 
-    m_sort_compare(orig_dir, left_dir, right_dir);
+    m_sort_compare(orig_vect, left_vect, right_vect);
 }
 
-void Project::m_sort_compare(std::vector<std::string> orig_dir, std::vector<std::string> left_dir, std::vector<std::string> right_dir) const
+void Project::m_sort_compare(std::vector<std::string> orig_vect, std::vector<std::string> left_vect, std::vector<std::string> right_vect) const
 {
     unsigned short i = 0, j = 0, k = 0,
-                   left_size = left_dir.size(),
-                   right_size = right_dir.size();
+                   left_size = left_vect.size(),
+                   right_size = right_vect.size();
 
     while (i < left_size && j < right_size)
     {
-        if (left_dir[i] < right_dir[j])
+        if (left_vect[i] < right_vect[j])
         {
-            orig_dir[k] = left_dir[i];
+            orig_vect[k] = left_vect[i];
             i++;
             k++;
         }
         else
         {
-            orig_dir[k] = right_dir[j];
+            orig_vect[k] = right_vect[j];
             j++;
             k++;
         }
@@ -51,14 +50,14 @@ void Project::m_sort_compare(std::vector<std::string> orig_dir, std::vector<std:
 
     while (i < left_size)
     {
-        orig_dir[k] = left_dir[i];
+        orig_vect[k] = left_vect[i];
         i++;
         k++;
     }
 
     while (j < right_size)
     {
-        orig_dir[k] = right_dir[j];
+        orig_vect[k] = right_vect[j];
         j++;
         k++;
     }
@@ -68,6 +67,7 @@ void Project::m_sort_compare(std::vector<std::string> orig_dir, std::vector<std:
 
 void Project::m_fetch_dir(std::vector<std::string> &vector)
 {
+// m_clear_current_proj_vector();
 #ifdef _WIN32
     WIN32_FIND_DATAA find_data;
     HANDLE handle_find = FindFirstFileA("*", &find_data);
@@ -90,12 +90,25 @@ void Project::m_fetch_dir(std::vector<std::string> &vector)
         throw std::runtime_error("ERROR ENUMERATING DIRECTORY CONTENTS");
     }
 #else
-    0
+    DIR* dir = opendir(".");
+
+    if (dir != nullptr) {
+        struct dirent* entry;
+        while ((entry = readdir(dir)) != nullptr) {
+            if (entry->d_type == DT_DIR) {
+                vector.push_back(entry->d_name);
+            }
+        }
+        closedir(dir);
+    } else {
+        throw std::runtime_error("ERROR ENUMERATING DIRECTORY CONTENTS");
+    }
 #endif
 }
 
 void Project::m_fetch_file(void)
 {
+// m_clear_current_proj_vector();
 #ifdef _WIN32
     WIN32_FIND_DATAA find_data;
     HANDLE handle_find = FindFirstFileA("*", &find_data);
@@ -146,25 +159,30 @@ Project::Project()
     try
     {
         m_change_dir("..");
-        m_fetch_dir(m_dir);
+        m_fetch_dir(this->m_current_proj.m_dir);
     }
     catch (const std::exception &e)
     {
         throw;
     }
 
-    m_sort(this->m_dir);
+    m_sort(this->m_current_proj.m_dir);
 }
 
-std::string &Project::operator[](const size_t INDEX)
+Project::~Project()
 {
-    if (INDEX >= m_dir.size())
-    {
-        throw std::out_of_range("INDEX OUT OF BOUNDS");
-    }
-
-    return m_dir[INDEX];
+    m_clear_current_proj_vector();
 }
+
+// std::string &Project::operator[](const size_t INDEX)
+// {
+//     if (INDEX >= m_current_proj.m_dir.size())
+//     {
+//         throw std::out_of_range("INDEX OUT OF BOUNDS");
+//     }
+
+//     return m_current_proj.m_dir[INDEX];
+// }
 
 const short Project::m_search(const std::string INPUT, const std::vector<std::string> &VECTOR) const
 {
@@ -218,7 +236,8 @@ void Project::m_init_proj(const std::string DIR_NAME)
     try
     {
         m_change_dir(DIR_NAME);
-        m_fetch_dir(m_current_proj.m_sub_dir);
+        m_clear_current_proj_vector();
+        m_fetch_dir(this->m_current_proj.m_dir);
         m_fetch_file();
     }
     catch (const std::exception &e)

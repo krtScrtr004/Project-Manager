@@ -72,10 +72,13 @@ const Options_e select_option(Project &project)
     switch (option)
     {
     case Options_e::OPEN:
+    {
         open_content(project, content_type);
         break;
+    }
 
     case Options_e::ADD:
+        add_content(project, content_type);
         break;
 
     case Options_e::SEARCH:

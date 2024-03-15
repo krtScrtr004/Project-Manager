@@ -11,9 +11,13 @@
 #include "project.h"
 
 // FUNCTIONS FROM main.cpp
-void open_proj(Project &project);
+// OPENING PROJECT / FOLDER / FILE
 void open_dir(Project &project);
 void open_file(Project &project);
+
+// ADDING
+void add_dir(Project &project);
+void add_file(Project &project);
 
 // --------------------------------------------------------------
 
@@ -71,6 +75,36 @@ inline bool is_valid_str(const std::string INPUT, const short MIN, const short M
 
 // --------------------------------------------------------------
 
+inline const std::string enter_dir_name(void)
+{
+    bool is_valid = false;
+    std::string temp_dir_name = " ";
+    do
+    {
+        std::cout << "ENTER DIRECTORY NAME: ";
+        getline(std::cin, temp_dir_name);
+        is_valid = is_valid_str(temp_dir_name, 1, 50);
+    } while (!is_valid);
+
+    return temp_dir_name;
+}
+
+inline const std::string enter_file_name(void)
+{
+    bool is_valid = false;
+    std::string temp_file_name = " ";
+    do
+    {
+        std::cout << "ENTER FILE NAME: ";
+        getline(std::cin, temp_file_name);
+        is_valid = is_valid_str(temp_file_name, 1, 50);
+    } while (!is_valid);
+
+    return temp_file_name;
+}
+
+// --------------------------------------------------------------
+
 inline void fetch_current_path(void)
 {
     char path[4096];
@@ -116,8 +150,17 @@ inline void open_content(Project &project, const Content_Type_e CONTENT_TYPE)
     switch (CONTENT_TYPE)
     {
     case Content_Type_e::DIRECTORY:
-        open_dir(project);
+    {
+        try
+        {
+            open_dir(project);
+        }
+        catch(const std::exception& e)
+        {
+            throw;
+        }        
         break;
+    }
 
     case Content_Type_e::FILE:
         open_file(project);
@@ -130,5 +173,27 @@ inline void open_content(Project &project, const Content_Type_e CONTENT_TYPE)
 
     return;
 }
+
+inline void add_content(Project &project, const Content_Type_e CONTENT_TYPE)
+{
+    switch (CONTENT_TYPE)
+    {
+    case Content_Type_e::DIRECTORY:
+        add_dir(project);
+        break;
+
+    case Content_Type_e::FILE:
+        add_file(project);
+        break;
+
+    default:
+        std::cerr << out_of_bounds_error(static_cast<short>(Content_Type_e::DIRECTORY),
+                                         static_cast<short>(Content_Type_e::FILE));
+    }
+
+    return;
+}
+
+
 
 #endif

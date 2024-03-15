@@ -15,13 +15,15 @@
 
 int main(void)
 {
+
     try
     {
         Project project;
+
         while (true)
         {
             std::cout << "PROJECTS: \n";
-            for (const auto &dir : project.m_get_proj_vector())
+            for (const auto &dir : project.m_get_dir_vector())
             {
                 std::cout << dir << '\n';
             }
@@ -50,12 +52,11 @@ int main(void)
             {
                 try
                 {
-                    open_proj(project);
+                    open_dir(project);
                 }
                 catch (const std::exception &e)
                 {
-                    std::cerr << "EXCEPTION CAUGHT: " << e.what() << '\n';
-                    return 1;
+                    throw;
                 }
             }
             else if (option == Options_e::ADD)
@@ -89,111 +90,45 @@ int main(void)
     return 0;
 }
 
-void open_proj(Project &project)
+void open_dir(Project &project)
 {
+    Project temp_project(project);
+    std::cout << "OPEN PROJECT: \n";
     bool is_valid = false;
-    std::string temp_proj_name = " ";
-    do
-    {
-        std::cout << "ENTER PROJECT NAME: ";
-        getline(std::cin, temp_proj_name);
-        is_valid = is_valid_str(temp_proj_name, 1, 50);
-    } while (!is_valid);
-    const std::size_t INDEX = project.m_search(temp_proj_name, project.m_get_proj_vector());
-    if (INDEX < 0 || INDEX > project.m_size() - 1)
+    const std::string temp_proj_name = enter_dir_name();
+    const std::size_t INDEX = project.m_search(temp_proj_name, temp_project.m_get_dir_vector());
+    if (INDEX < 0 || INDEX > project.m_get_dir_vector().size() - 1)
     {
         std::cout << "PROJECT NAME NOT FOUND!\n";
         return;
     }
 
-    try
-    {
-        project.m_clear_current_proj_vector();
-        project.m_init_proj(project[INDEX]);
-    }
-    catch (const std::exception &e)
-    {
-        throw;
-    }
-
-    Options_e option;
-    while (option != Options_e::EXIT)
-    {
-        print_contents(project.m_get_sub_dir_vector(), project.m_get_file_vector());
-        option = select_option(project);
-    }
-
-    try
-    {
-        project.m_change_dir("..");
-    }
-    catch (const std::exception &e)
-    {
-        throw;
-    }
-
-    return;
-}
-
-void open_dir(Project &project)
-{
-    Project *temp_project = new Project(project);
+    temp_project.m_init_proj(temp_project.m_get_dir_name(INDEX));
     
-    bool is_valid = false;
-    std::string temp_dir_name = " ";
-    do
-    {
-        std::cout << "ENTER DIRECTORY NAME: ";
-        getline(std::cin, temp_dir_name);
-        is_valid = is_valid_str(temp_dir_name, 1, 50);
-    } while (!is_valid);
-    const std::size_t INDEX = temp_project->m_search(temp_dir_name, temp_project->m_get_sub_dir_vector());
-    if (INDEX < 0 || INDEX > temp_project->m_get_sub_dir_vector().size() - 1)
-    {
-        std::cout << "DIRECTORY NAME NOT FOUND!\n";
-        return;
-    }
-
-    try
-    {
-        temp_project->m_clear_current_proj_vector();
-        temp_project->m_init_proj(temp_project->m_get_sub_dir_name(INDEX));
-    }
-    catch (const std::exception &e)
-    {
-        throw;
-    }
-
     Options_e option;
     while (option != Options_e::EXIT)
     {
-        print_contents(temp_project->m_get_sub_dir_vector(), temp_project->m_get_file_vector());
-        option = select_option(*temp_project);
+        print_contents(temp_project.m_get_dir_vector(), temp_project.m_get_file_vector());
+        option = select_option(temp_project);
     }
 
     try
     {
-        temp_project->m_change_dir("..");
+        temp_project.m_change_dir("..");
     }
     catch (const std::exception &e)
     {
         throw;
     }
 
-    delete temp_project;
     return;
 }
 
 void open_file(Project &project)
 {
+    std::cout << "OPEN FILE: \n";
     bool is_valid = false;
-    std::string temp_file_name = " ";
-    do
-    {
-        std::cout << "ENTER FILE NAME: ";
-        getline(std::cin, temp_file_name);
-        is_valid = is_valid_str(temp_file_name, 1, 50);
-    } while (!is_valid);
+    const std::string temp_file_name = enter_file_name();
     const std::size_t INDEX = project.m_search(temp_file_name, project.m_get_file_vector());
     if (INDEX < 0 || INDEX > project.m_get_file_vector().size() - 1)
     {
@@ -203,6 +138,26 @@ void open_file(Project &project)
 
     std::string param = "code " + temp_file_name;
     system(param.c_str());
+
+    return;
+}
+
+// TODO:ADD PROJECT
+
+void add_dir(Project &project)
+{
+    std::cout << "ADD SUB-DIRECTORY: \n";
+    project.m_add_dir(enter_dir_name());
+    std::cout << "SUB-DIRECTORY SUCCESSFULLY ADDDED\n";
+
+    return;
+}
+
+void add_file(Project &project)
+{
+    std::cout << "ADD FILE: \n";
+    project.m_add_file(enter_file_name());
+    std::cout << "FILE SUCCESSFULLY ADDDED\n";
 
     return;
 }
