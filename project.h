@@ -107,6 +107,34 @@ public:
         m_sort(this->m_current_proj.m_file);
         return;
     }
+
+    inline void m_set_dir_name(const std::string NEW_NAME, const size_t INDEX)
+    {
+        std::string PARAM;
+#ifdef _WIN32
+        PARAM = "ren " + m_get_dir_name(INDEX) + ' ' + NEW_NAME;
+#else
+        PARAM = "mv " + m_get_dir_name(INDEX) + ' ' + NEW_NAME;
+#endif
+        system(PARAM.c_str());
+        m_current_proj.m_dir[INDEX] = NEW_NAME;
+
+        return;
+    }
+
+    inline void m_set_file_name(const std::string NEW_NAME, const size_t INDEX)
+    {
+        std::string PARAM;
+#ifdef _WIN32
+        PARAM = "ren " + m_get_file_name(INDEX) + ' ' + NEW_NAME;
+#else
+        PARAM = "mv " + m_get_file_name(INDEX) + ' ' + NEW_NAME;
+#endif
+        system(PARAM.c_str());
+        m_current_proj.m_file[INDEX] = NEW_NAME;
+
+        return;
+    }
 };
 
 #endif

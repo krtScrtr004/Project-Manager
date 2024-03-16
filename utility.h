@@ -19,7 +19,7 @@ void open_file(const Project &project, std::string temp_file_name = " ");
 void add_dir(Project &project);
 void add_file(Project &project);
 
-void search_content(const Project &project, const Content_Type_e CONTENT_TYPE);
+void search_content(Project &project, const Content_Type_e CONTENT_TYPE);
 
 // --------------------------------------------------------------
 
@@ -189,6 +189,8 @@ inline void add_content(Project &project, const Content_Type_e CONTENT_TYPE)
     return;
 }
 
-void search_options(const Project &project, const Content_Type_e CONTENT_TYPE, const size_t INDEX);
+void search_options(Project &project, const Content_Type_e CONTENT_TYPE, const size_t INDEX);
+
+void edit_content(Project &project, CONST Content_Type_e CONTENT_TYPE);
 
 #endif

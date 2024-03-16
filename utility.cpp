@@ -76,6 +76,7 @@ const Options_e select_option(Project &project)
         break;
 
     case Options_e::EDIT:
+        edit_content(project, content_type);
         break;
 
     case Options_e::REMOVE:
@@ -92,7 +93,7 @@ const Options_e select_option(Project &project)
     return option;
 }
 
-void search_options(const Project &project, const Content_Type_e CONTENT_TYPE, const size_t INDEX)
+void search_options(Project &project, const Content_Type_e CONTENT_TYPE, const size_t INDEX)
 {
     Search_Options_e option;
     bool is_valid = false;
@@ -122,6 +123,7 @@ void search_options(const Project &project, const Content_Type_e CONTENT_TYPE, c
     }
 
     case Search_Options_e::EDIT:
+        edit_content(project, CONTENT_TYPE);
         break;
 
     case Search_Options_e::REMOVE:

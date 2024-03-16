@@ -1,15 +1,8 @@
-// #ifdef _WIN32
-//  system("cd ../ && dir /A:D /B");
-// #else
-//  system("cd ../ && ls -l | grep '^d'");
-// #endif
-
 #include <cstdlib>
 #include <iostream>
 #include <limits>
 #include <stdexcept>
 #include <string>
-#include <type_traits>
 
 #include "project.h"
 #include "utility.h"
@@ -70,7 +63,7 @@ int main(void)
             }
             else if (option == Options_e::EDIT)
             {
-                /* code */
+                edit_content(project, Content_Type_e::DIRECTORY);
             }
             else if (option == Options_e::REMOVE)
             {
@@ -170,8 +163,10 @@ void add_file(Project &project)
     return;
 }
 
-void search_content(const Project &project, const Content_Type_e CONTENT_TYPE)
+// Searching Dir / File
+void search_content(Project &project, const Content_Type_e CONTENT_TYPE)
 {
+    std::cout << "SEARCH DIRECTORY / FILE\n";
     const std::string TARGET_NAME = (CONTENT_TYPE == Content_Type_e::DIRECTORY)
                                         ? enter_dir_name()
                                         : enter_file_name();
@@ -189,6 +184,43 @@ void search_content(const Project &project, const Content_Type_e CONTENT_TYPE)
     }
 
     search_options(project, CONTENT_TYPE, INDEX);
+
+    return;
+}
+
+void edit_content(Project &project, CONST Content_Type_e CONTENT_TYPE)
+{
+    std::cout << "EDIT DIRECTORY / FILE NAME\n";
+    const std::string TARGET_NAME = (CONTENT_TYPE == Content_Type_e::DIRECTORY)
+                                        ? enter_dir_name()
+                                        : enter_file_name();
+    const size_t INDEX = project.m_search(TARGET_NAME, (CONTENT_TYPE == Content_Type_e::DIRECTORY)
+                                                           ? project.m_get_dir_vector()
+                                                           : project.m_get_file_vector());
+    if (INDEX < 0 || INDEX > ((CONTENT_TYPE == Content_Type_e::DIRECTORY)
+                                  ? project.m_get_dir_vector()
+                                  : project.m_get_file_vector())
+                                     .size() -
+                                 1)
+    {
+        std::cout << "DIRECTORY NOT FOUND\n";
+        return;
+    }
+
+    std::cout << "ENTER NEW NAME:\n";
+    const std::string NEW_NAME = (CONTENT_TYPE == Content_Type_e::DIRECTORY)
+                                     ? enter_dir_name()
+                                     : enter_file_name();
+
+    if (CONTENT_TYPE == Content_Type_e::DIRECTORY)
+    {
+        project.m_set_dir_name(NEW_NAME, INDEX);
+    }
+    else
+    {
+        project.m_set_file_name(NEW_NAME, INDEX);
+    }
+    std::cout << "NEW NAME SET SUCCESSFULLY!\n";
 
     return;
 }
