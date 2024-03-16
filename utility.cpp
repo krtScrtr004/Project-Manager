@@ -1,13 +1,5 @@
 #include "utility.h"
 
-std::istream &operator>>(std::istream &is, Content_Type_e &content_type)
-{
-    int value;
-    is >> value;
-    content_type = static_cast<Content_Type_e>(value);
-    return is;
-}
-
 void print_contents(const std::vector<std::string> &DIR_VECTOR, const std::vector<std::string> &FILE_VECTOR)
 {
     fetch_current_path();
@@ -72,16 +64,15 @@ const Options_e select_option(Project &project)
     switch (option)
     {
     case Options_e::OPEN:
-    {
         open_content(project, content_type);
         break;
-    }
 
     case Options_e::ADD:
         add_content(project, content_type);
         break;
 
     case Options_e::SEARCH:
+        search_content(project, content_type);
         break;
 
     case Options_e::EDIT:
@@ -99,4 +90,50 @@ const Options_e select_option(Project &project)
     }
 
     return option;
+}
+
+void search_options(const Project &project, const Content_Type_e CONTENT_TYPE, const size_t INDEX)
+{
+    Search_Options_e option;
+    bool is_valid = false;
+    do
+    {
+        std::cout << "SELECT ACTIONS:\n";
+        std::cout << "[1] OPEN\n";
+        std::cout << "[2] EDIT\n";
+        std::cout << "[3] DELETE\n";
+        std::cout << "[4] BACK\n";
+
+        std::cin >> option;
+        is_valid = is_valid_num(static_cast<short>(option),
+                                static_cast<short>(Search_Options_e::OPEN),
+                                static_cast<short>(Search_Options_e::EXIT));
+    } while (!is_valid);
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    switch (option)
+    {
+    case Search_Options_e::OPEN:
+    {
+        (CONTENT_TYPE == Content_Type_e::DIRECTORY)
+            ? open_dir(project, project.m_get_dir_name(INDEX))
+            : open_file(project, project.m_get_file_name(INDEX));
+        break;
+    }
+
+    case Search_Options_e::EDIT:
+        break;
+
+    case Search_Options_e::REMOVE:
+        break;
+
+    case Search_Options_e::EXIT:
+        break;
+
+    default:
+        std::cerr << out_of_bounds_error(static_cast<short>(Search_Options_e::OPEN),
+                                         static_cast<short>(Search_Options_e::EXIT));
+    }
+
+    return;
 }

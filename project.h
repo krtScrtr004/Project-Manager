@@ -19,6 +19,13 @@
 #include <string>
 #include <vector>
 
+enum class Content_Type_e : unsigned short
+{
+    DIRECTORY = 1,
+    FILE
+};
+std::istream &operator>>(std::istream &is, Content_Type_e &content_type);
+
 enum class Options_e : unsigned short
 {
     OPEN = 1U,
@@ -29,6 +36,15 @@ enum class Options_e : unsigned short
     EXIT
 };
 std::istream &operator>>(std::istream &is, Options_e &option);
+
+enum class Search_Options_e : unsigned short
+{
+    OPEN = 1,
+    EDIT,
+    REMOVE,
+    EXIT
+};
+std::istream &operator>>(std::istream &is, Search_Options_e &option);
 
 class Project
 {

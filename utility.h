@@ -12,21 +12,16 @@
 
 // FUNCTIONS FROM main.cpp
 // OPENING PROJECT / FOLDER / FILE
-void open_dir(Project &project);
-void open_file(Project &project);
+void open_dir(const Project &project, std::string temp_dir_name = " ");
+void open_file(const Project &project, std::string temp_file_name = " ");
 
 // ADDING
 void add_dir(Project &project);
 void add_file(Project &project);
 
-// --------------------------------------------------------------
+void search_content(const Project &project, const Content_Type_e CONTENT_TYPE);
 
-enum class Content_Type_e : unsigned short
-{
-    DIRECTORY = 1,
-    FILE
-};
-std::istream &operator>>(std::istream &is, Content_Type_e &content_tyoe);
+// --------------------------------------------------------------
 
 // --------------------------------------------------------------
 
@@ -194,6 +189,6 @@ inline void add_content(Project &project, const Content_Type_e CONTENT_TYPE)
     return;
 }
 
-
+void search_options(const Project &project, const Content_Type_e CONTENT_TYPE, const size_t INDEX);
 
 #endif

@@ -1,5 +1,13 @@
 #include "project.h"
 
+std::istream &operator>>(std::istream &is, Content_Type_e &content_type)
+{
+    int value;
+    is >> value;
+    content_type = static_cast<Content_Type_e>(value);
+    return is;
+}
+
 std::istream &operator>>(std::istream &is, Options_e &option)
 {
     int value;
@@ -7,6 +15,15 @@ std::istream &operator>>(std::istream &is, Options_e &option)
     option = static_cast<Options_e>(value); // Convert the integer to Home_Options_e
     return is;
 }
+
+std::istream &operator>>(std::istream &is, Search_Options_e &option)
+{
+    int value;
+    is >> value;
+    option = static_cast<Search_Options_e>(value);
+    return is;
+}
+
 
 // PRIVATE METHODS
 void Project::m_sort(std::vector<std::string> orig_vect)

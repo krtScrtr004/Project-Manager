@@ -9,6 +9,7 @@
 #include <limits>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
 #include "project.h"
 #include "utility.h"
@@ -31,8 +32,8 @@ int main(void)
             std::cout << "PROJECT MANAGER\n";
             std::cout << "[1] OPEN PROJECT\n";
             std::cout << "[2] ADD PROJECT\n";
-            std::cout << "[3] OPEN PROJECT\n";
-            std::cout << "[4] SEARCH PROJECT\n";
+            std::cout << "[3] SEARCH PROJECT\n";
+            std::cout << "[4] EDIT PROJECT\n";
             std::cout << "[5] DELETE PROJECT\n";
             std::cout << "[6] EXIT\n";
 
@@ -61,11 +62,11 @@ int main(void)
             }
             else if (option == Options_e::ADD)
             {
-                /* code */
+                add_content(project, Content_Type_e::DIRECTORY);
             }
             else if (option == Options_e::SEARCH)
             {
-                /* code */
+                search_content(project, Content_Type_e::DIRECTORY);
             }
             else if (option == Options_e::EDIT)
             {
@@ -90,21 +91,25 @@ int main(void)
     return 0;
 }
 
-void open_dir(Project &project)
+// temp_dir_name CONTAINS DEFAULT PARAM (" ")
+void open_dir(const Project &project, std::string temp_dir_name)
 {
     Project temp_project(project);
-    std::cout << "OPEN PROJECT: \n";
+    std::cout << "OPEN DIRECTORY: \n";
     bool is_valid = false;
-    const std::string temp_proj_name = enter_dir_name();
-    const std::size_t INDEX = project.m_search(temp_proj_name, temp_project.m_get_dir_vector());
+    if (temp_dir_name == " ")
+    {
+        temp_dir_name = enter_dir_name();
+    }
+    const std::size_t INDEX = project.m_search(temp_dir_name, temp_project.m_get_dir_vector());
     if (INDEX < 0 || INDEX > project.m_get_dir_vector().size() - 1)
     {
-        std::cout << "PROJECT NAME NOT FOUND!\n";
+        std::cout << "DIRECTORY NAME NOT FOUND!\n";
         return;
     }
 
     temp_project.m_init_proj(temp_project.m_get_dir_name(INDEX));
-    
+
     Options_e option;
     while (option != Options_e::EXIT)
     {
@@ -124,11 +129,15 @@ void open_dir(Project &project)
     return;
 }
 
-void open_file(Project &project)
+// temp_file_name CONTAINS DEFAULT PARAM (" ")
+void open_file(const Project &project, std::string temp_file_name)
 {
     std::cout << "OPEN FILE: \n";
     bool is_valid = false;
-    const std::string temp_file_name = enter_file_name();
+    if (temp_file_name == " ")
+    {
+        temp_file_name = enter_file_name();
+    }
     const std::size_t INDEX = project.m_search(temp_file_name, project.m_get_file_vector());
     if (INDEX < 0 || INDEX > project.m_get_file_vector().size() - 1)
     {
@@ -142,8 +151,7 @@ void open_file(Project &project)
     return;
 }
 
-// TODO:ADD PROJECT
-
+// Adding Dir / File
 void add_dir(Project &project)
 {
     std::cout << "ADD SUB-DIRECTORY: \n";
@@ -158,6 +166,29 @@ void add_file(Project &project)
     std::cout << "ADD FILE: \n";
     project.m_add_file(enter_file_name());
     std::cout << "FILE SUCCESSFULLY ADDDED\n";
+
+    return;
+}
+
+void search_content(const Project &project, const Content_Type_e CONTENT_TYPE)
+{
+    const std::string TARGET_NAME = (CONTENT_TYPE == Content_Type_e::DIRECTORY)
+                                        ? enter_dir_name()
+                                        : enter_file_name();
+    const size_t INDEX = project.m_search(TARGET_NAME, (CONTENT_TYPE == Content_Type_e::DIRECTORY)
+                                                           ? project.m_get_dir_vector()
+                                                           : project.m_get_file_vector());
+    if (INDEX < 0 || INDEX > ((CONTENT_TYPE == Content_Type_e::DIRECTORY)
+                                  ? project.m_get_dir_vector()
+                                  : project.m_get_file_vector())
+                                     .size() -
+                                 1)
+    {
+        std::cout << "DIRECTORY NOT FOUND\n";
+        return;
+    }
+
+    search_options(project, CONTENT_TYPE, INDEX);
 
     return;
 }
