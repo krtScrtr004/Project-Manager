@@ -17,7 +17,9 @@ int main(void)
 
         while (true)
         {
-            std::cout << "PROJECT MANAGER\n\n";
+            std::cout << " -----------------\n";
+            std::cout << "| PROJECT MANAGER |\n";
+            std::cout << " -----------------\n\n";
 
             std::cout << "PROJECTS: \n";
             for (const auto &dir : project.m_get_dir_vector())
@@ -95,8 +97,14 @@ int main(void)
 // temp_dir_name CONTAINS DEFAULT PARAM (" ")
 void open_dir(const Project &project, std::string temp_dir_name)
 {
+    std::cout << '\n';
+
     Project temp_project(project);
-    std::cout << "OPEN DIRECTORY: \n";
+
+    std::cout << " ----------------\n";
+    std::cout << "| OPEN DIRECTORY |\n";
+    std::cout << " ----------------\n";
+
     bool is_valid = false;
     if (temp_dir_name == " ")
     {
@@ -133,7 +141,10 @@ void open_dir(const Project &project, std::string temp_dir_name)
 // temp_file_name CONTAINS DEFAULT PARAM (" ")
 void open_file(const Project &project, std::string temp_file_name)
 {
-    std::cout << "OPEN FILE: \n";
+    std::cout << " -----------\n";
+    std::cout << "| OPEN FILE |\n";
+    std::cout << " -----------\n";
+
     bool is_valid = false;
     if (temp_file_name == " ")
     {
@@ -146,8 +157,8 @@ void open_file(const Project &project, std::string temp_file_name)
         return;
     }
 
-    std::string param = "code " + temp_file_name;
-    system(param.c_str());
+    const std::string PARAM = "code " + temp_file_name;
+    system(PARAM.c_str());
 
     return;
 }
@@ -155,7 +166,12 @@ void open_file(const Project &project, std::string temp_file_name)
 // Adding Dir / File
 void add_dir(Project &project)
 {
-    std::cout << "\nADD DIRECTORY: \n";
+    std::cout << '\n';
+
+    std::cout << " ---------------\n";
+    std::cout << "| ADD DIRECTORY |\n";
+    std::cout << " ---------------\n";
+
     project.m_add_dir(enter_dir_name());
     std::cout << "DIRECTORY SUCCESSFULLY ADDDED\n";
 
@@ -164,7 +180,12 @@ void add_dir(Project &project)
 
 void add_file(Project &project)
 {
-    std::cout << "\nADD FILE: \n";
+    std::cout << '\n';
+
+    std::cout << " ----------\n";
+    std::cout << "| ADD FILE |\n";
+    std::cout << " ----------\n";
+
     project.m_add_file(enter_file_name());
     std::cout << "FILE SUCCESSFULLY ADDDED\n";
 
@@ -174,13 +195,18 @@ void add_file(Project &project)
 // Searching Dir / File
 const short search_content(Project &project, const Content_Type_e CONTENT_TYPE)
 {
-    std::cout << "\nSEARCH DIRECTORY / FILE\n";
+    std::cout << '\n';
+
+    std::cout << " -------------------------\n";
+    std::cout << "| SEARCH DIRECTORY / FILE |\n";
+    std::cout << " -------------------------\n";
+
     const std::string TARGET_NAME = (CONTENT_TYPE == Content_Type_e::DIRECTORY)
                                         ? enter_dir_name()
                                         : enter_file_name();
     const short INDEX = project.m_search(TARGET_NAME, (CONTENT_TYPE == Content_Type_e::DIRECTORY)
-                                                           ? project.m_get_dir_vector()
-                                                           : project.m_get_file_vector());
+                                                          ? project.m_get_dir_vector()
+                                                          : project.m_get_file_vector());
     if (INDEX < 0 || INDEX > ((CONTENT_TYPE == Content_Type_e::DIRECTORY)
                                   ? project.m_get_dir_vector()
                                   : project.m_get_file_vector())
@@ -196,7 +222,12 @@ const short search_content(Project &project, const Content_Type_e CONTENT_TYPE)
 
 void edit_content(Project &project, CONST Content_Type_e CONTENT_TYPE)
 {
-    std::cout << "\nEDIT DIRECTORY / FILE NAME\n";
+    std::cout << '\n';
+
+    std::cout << " ----------------------------\n";
+    std::cout << "| EDIT DIRECTORY / FILE NAME |\n";
+    std::cout << " ----------------------------\n";
+
     const short INDEX = search_content(project, CONTENT_TYPE);
     if (INDEX < 0)
     {
@@ -223,7 +254,12 @@ void edit_content(Project &project, CONST Content_Type_e CONTENT_TYPE)
 
 void remove_content(Project &project, const Content_Type_e CONTENT_TYPE)
 {
-    std::cout << "\nDELETE DIRECTORY / FILE NAME\n";
+    std::cout << '\n';
+
+    std::cout << " ------------------------------\n";
+    std::cout << "| DELETE DIRECTORY / FILE NAME |\n";
+    std::cout << " ------------------------------\n";
+
     const short INDEX = search_content(project, CONTENT_TYPE);
     if (INDEX < 0)
     {
@@ -234,7 +270,7 @@ void remove_content(Project &project, const Content_Type_e CONTENT_TYPE)
     char answer = ' ';
     do
     {
-        std::cout << "\nARE YOU SURE TO REMOVE " + ((CONTENT_TYPE == Content_Type_e::DIRECTORY) ? project.m_get_dir_name(INDEX) : project.m_get_file_name(INDEX)) + "? (y / n) ";
+        std::cout << "\n<ARE YOU SURE TO REMOVE " + ((CONTENT_TYPE == Content_Type_e::DIRECTORY) ? project.m_get_dir_name(INDEX) : project.m_get_file_name(INDEX)) + "?> (y / n) ";
         std::cin >> answer;
         tolower(answer);
         is_valid = (answer == 'y' || answer == 'n') ? true : false;

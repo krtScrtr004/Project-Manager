@@ -121,14 +121,20 @@ void print_contents(const std::vector<std::string> &DIR_VECTOR, const std::vecto
 
 inline const Content_Type_e select_content(void)
 {
-    std::cout << "\nSELECT CONTENT TYPE: \n";
-    std::cout << "[1] DIRECTORY\n";
-    std::cout << "[2] FILE\n";
+    std::cout << '\n';
+
+    std::cout << " ---------------------\n";
+    std::cout << "| SELECT CONTENT TYPE |\n";
+    std::cout << " ---------------------\n";
 
     Content_Type_e select_content;
     bool is_valid = false;
     do
     {
+        std::cout << "[1] DIRECTORY\n";
+        std::cout << "[2] FILE\n";
+
+        std::cout << "-------------------------------------\n";
         std::cout << "<SELECT FROM THE OPTIONS:> ";
         std::cin >> select_content;
         is_valid = is_valid_num(static_cast<short>(select_content),
@@ -152,10 +158,10 @@ inline void open_content(Project &project, const Content_Type_e CONTENT_TYPE)
         {
             open_dir(project);
         }
-        catch(const std::exception& e)
+        catch (const std::exception &e)
         {
             throw;
-        }        
+        }
         break;
     }
 
