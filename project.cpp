@@ -26,7 +26,7 @@ std::istream &operator>>(std::istream &is, Search_Options_e &option)
 
 
 // PRIVATE METHODS
-void Project::m_sort(std::vector<std::string> orig_vect)
+void Project::m_sort(std::vector<std::string> &orig_vect)
 {
     if (orig_vect.size() <= 1)
     {
@@ -43,7 +43,7 @@ void Project::m_sort(std::vector<std::string> orig_vect)
     m_sort_compare(orig_vect, left_vect, right_vect);
 }
 
-void Project::m_sort_compare(std::vector<std::string> orig_vect, std::vector<std::string> left_vect, std::vector<std::string> right_vect) const
+void Project::m_sort_compare(std::vector<std::string> &orig_vect, std::vector<std::string> &left_vect, std::vector<std::string> &right_vect) const
 {
     unsigned short i = 0, j = 0, k = 0,
                    left_size = left_vect.size(),
@@ -190,16 +190,6 @@ Project::~Project()
 {
     m_clear_current_proj_vector();
 }
-
-// std::string &Project::operator[](const size_t INDEX)
-// {
-//     if (INDEX >= m_current_proj.m_dir.size())
-//     {
-//         throw std::out_of_range("INDEX OUT OF BOUNDS");
-//     }
-
-//     return m_current_proj.m_dir[INDEX];
-// }
 
 const short Project::m_search(const std::string INPUT, const std::vector<std::string> &VECTOR) const
 {

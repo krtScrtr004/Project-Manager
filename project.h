@@ -57,8 +57,8 @@ private:
     } m_current_proj;
 
 private:
-    void m_sort(std::vector<std::string> orig_vect);
-    void m_sort_compare(std::vector<std::string> orig_vect, std::vector<std::string> left_vect, std::vector<std::string> right_vect) const;
+    void m_sort(std::vector<std::string> &orig_vect);
+    void m_sort_compare(std::vector<std::string> &orig_vect, std::vector<std::string> &left_vect, std::vector<std::string> &right_vect) const;
 
     void m_fetch_dir(std::vector<std::string> &vector);
     void m_fetch_file(void);
@@ -67,16 +67,12 @@ public:
     Project();
     ~Project();
 
-    // std::string &operator[](const size_t INDEX);
-
-    // inline const unsigned short m_size(void) const { return m_proj.size(); }
-    // inline const std::vector<std::string> &m_get_proj_vector(void) const { return m_proj; }
     inline const std::vector<std::string> &m_get_dir_vector(void) const { return m_current_proj.m_dir; }
     inline const std::vector<std::string> &m_get_file_vector(void) const { return m_current_proj.m_file; }
 
     // inline const
-    inline const std::string m_get_dir_name(const size_t INDEX) const { return m_current_proj.m_dir[INDEX]; }
-    inline const std::string m_get_file_name(const size_t INDEX) const { return m_current_proj.m_file[INDEX]; }
+    inline const std::string m_get_dir_name(const short INDEX) const { return m_current_proj.m_dir[INDEX]; }
+    inline const std::string m_get_file_name(const short INDEX) const { return m_current_proj.m_file[INDEX]; }
 
     const short m_search(const std::string INPUT, const std::vector<std::string> &VECTOR) const;
 
@@ -96,6 +92,10 @@ public:
         const std::string PARAM = "mkdir " + DIR_NAME;
         system(PARAM.c_str());
         m_sort(this->m_current_proj.m_dir);
+
+        for (const auto &i : m_current_proj.m_dir)
+            std::cout << i << '\n';
+
         return;
     }
 
@@ -108,7 +108,7 @@ public:
         return;
     }
 
-    inline void m_set_dir_name(const std::string NEW_NAME, const size_t INDEX)
+    inline void m_set_dir_name(const std::string NEW_NAME, const short INDEX)
     {
         std::string PARAM;
 #ifdef _WIN32
@@ -122,7 +122,7 @@ public:
         return;
     }
 
-    inline void m_set_file_name(const std::string NEW_NAME, const size_t INDEX)
+    inline void m_set_file_name(const std::string NEW_NAME, const short INDEX)
     {
         std::string PARAM;
 #ifdef _WIN32
@@ -135,6 +135,30 @@ public:
 
         return;
     }
+
+    inline void m_remove_dir(const short INDEX)
+    {
+#ifdef _WIN32
+    const std::string PARAM = "rmdir /s /q " + m_get_dir_name(INDEX); 
+#else
+    CONST STD::STRING param = "rm -r " + m_get_dir_name(INDEX); 
+#endif
+        m_current_proj.m_dir.erase(m_current_proj.m_dir.begin() + INDEX);
+        system(PARAM.c_str());
+        return;
+    } 
+
+     inline void m_remove_file(const short INDEX)
+    {
+#ifdef _WIN32
+    const std::string PARAM = "del " + m_get_dir_name(INDEX); 
+#else
+    CONST STD::STRING param = "rm " + m_get_dir_name(INDEX); 
+#endif
+        system(PARAM.c_str());
+        m_current_proj.m_file.erase(m_current_proj.m_file.begin() + INDEX);
+        return;
+    } 
 };
 
 #endif

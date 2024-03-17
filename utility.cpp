@@ -2,27 +2,31 @@
 
 void print_contents(const std::vector<std::string> &DIR_VECTOR, const std::vector<std::string> &FILE_VECTOR)
 {
+    std::cout << '\n';
     fetch_current_path();
     std::cout << '\n';
+
     if (!DIR_VECTOR.empty())
     {
-        std::cout << "SUB-DIRECTORIES: \n";
+        std::cout << "DIRECTORIES: \n";
         for (const auto &sub_dir : DIR_VECTOR)
         {
-            std::cout << sub_dir << '\n';
+            std::cout << "* " << sub_dir << '\n';
         }
     }
     else
     {
-        std::cout << "NO SUB-DIRECTORIES AVAILABLE\n";
+        std::cout << "NO DIRECTORIES AVAILABLE\n";
     }
+
+    std::cout << '\n';
 
     if (!FILE_VECTOR.empty())
     {
         std::cout << "\nFILES: \n";
         for (const auto &file : FILE_VECTOR)
         {
-            std::cout << file << '\n';
+            std::cout << "- " << file << '\n';
         }
     }
     else
@@ -36,7 +40,6 @@ void print_contents(const std::vector<std::string> &DIR_VECTOR, const std::vecto
 
 const Options_e select_option(Project &project)
 {
-    std::cout << "OPTIONS: \n";
     std::cout << "[1] OPEN\n";
     std::cout << "[2] ADD\n";
     std::cout << "[3] SEARCH\n";
@@ -48,7 +51,7 @@ const Options_e select_option(Project &project)
     Options_e option;
     do
     {
-        std::cout << "SELECT FROM OPTIONS: ";
+        std::cout << "<SELECT FROM OPTIONS:> ";
         std::cin >> option;
         is_valid = is_valid_num(static_cast<short>(option),
                                 static_cast<short>(Options_e::OPEN),
@@ -72,14 +75,21 @@ const Options_e select_option(Project &project)
         break;
 
     case Options_e::SEARCH:
-        search_content(project, content_type);
+    {
+        const short INDEX = search_content(project, content_type);
+        if (INDEX >= 0)
+        {
+            search_options(project, content_type, INDEX);
+        }
         break;
+    }
 
     case Options_e::EDIT:
         edit_content(project, content_type);
         break;
 
     case Options_e::REMOVE:
+        remove_content(project, content_type);
         break;
 
     case Options_e::EXIT:
@@ -93,18 +103,18 @@ const Options_e select_option(Project &project)
     return option;
 }
 
-void search_options(Project &project, const Content_Type_e CONTENT_TYPE, const size_t INDEX)
+void search_options(Project &project, const Content_Type_e CONTENT_TYPE, const short INDEX)
 {
     Search_Options_e option;
     bool is_valid = false;
     do
     {
-        std::cout << "SELECT ACTIONS:\n";
         std::cout << "[1] OPEN\n";
         std::cout << "[2] EDIT\n";
         std::cout << "[3] DELETE\n";
         std::cout << "[4] BACK\n";
 
+        std::cout << "<SELECT FROM OPTIONS:> ";
         std::cin >> option;
         is_valid = is_valid_num(static_cast<short>(option),
                                 static_cast<short>(Search_Options_e::OPEN),
@@ -127,6 +137,7 @@ void search_options(Project &project, const Content_Type_e CONTENT_TYPE, const s
         break;
 
     case Search_Options_e::REMOVE:
+        remove_content(project, CONTENT_TYPE);
         break;
 
     case Search_Options_e::EXIT:

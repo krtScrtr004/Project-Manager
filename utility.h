@@ -19,7 +19,9 @@ void open_file(const Project &project, std::string temp_file_name = " ");
 void add_dir(Project &project);
 void add_file(Project &project);
 
-void search_content(Project &project, const Content_Type_e CONTENT_TYPE);
+const short search_content(Project &project, const Content_Type_e CONTENT_TYPE);
+
+void remove_content(Project &project, const Content_Type_e CONTENT_TYPE);
 
 // --------------------------------------------------------------
 
@@ -76,7 +78,7 @@ inline const std::string enter_dir_name(void)
     std::string temp_dir_name = " ";
     do
     {
-        std::cout << "ENTER DIRECTORY NAME: ";
+        std::cout << "<ENTER DIRECTORY NAME:> ";
         getline(std::cin, temp_dir_name);
         is_valid = is_valid_str(temp_dir_name, 1, 50);
     } while (!is_valid);
@@ -90,7 +92,7 @@ inline const std::string enter_file_name(void)
     std::string temp_file_name = " ";
     do
     {
-        std::cout << "ENTER FILE NAME: ";
+        std::cout << "<ENTER FILE NAME:> ";
         getline(std::cin, temp_file_name);
         is_valid = is_valid_str(temp_file_name, 1, 50);
     } while (!is_valid);
@@ -119,7 +121,7 @@ void print_contents(const std::vector<std::string> &DIR_VECTOR, const std::vecto
 
 inline const Content_Type_e select_content(void)
 {
-    std::cout << "SELECT CONTENT TYPE: \n";
+    std::cout << "\nSELECT CONTENT TYPE: \n";
     std::cout << "[1] DIRECTORY\n";
     std::cout << "[2] FILE\n";
 
@@ -127,7 +129,7 @@ inline const Content_Type_e select_content(void)
     bool is_valid = false;
     do
     {
-        std::cout << "ENTER HERE: ";
+        std::cout << "<SELECT FROM THE OPTIONS:> ";
         std::cin >> select_content;
         is_valid = is_valid_num(static_cast<short>(select_content),
                                 static_cast<short>(Content_Type_e::DIRECTORY),
@@ -189,7 +191,7 @@ inline void add_content(Project &project, const Content_Type_e CONTENT_TYPE)
     return;
 }
 
-void search_options(Project &project, const Content_Type_e CONTENT_TYPE, const size_t INDEX);
+void search_options(Project &project, const Content_Type_e CONTENT_TYPE, const short INDEX);
 
 void edit_content(Project &project, CONST Content_Type_e CONTENT_TYPE);
 
